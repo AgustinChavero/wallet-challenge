@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PaymentSession extends Model
+{
+    use HasFactory;
+
+    protected $table = 'payment_sessions';
+
+    protected $fillable = [
+        'wallet_id',
+        'session_uid',
+        'token',
+        'amount',
+        'status_id',
+        'confirmed_at',
+    ];
+
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'confirmed_at' => 'datetime',
+    ];
+
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class, 'wallet_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(Status::class, 'status_id');
+    }
+}
