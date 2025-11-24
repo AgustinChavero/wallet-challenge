@@ -21,6 +21,7 @@ class CreateWalletsTable extends Migration
             $table->decimal('balance', 15, 2)->default(0);
             
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
         });

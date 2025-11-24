@@ -15,6 +15,7 @@ class CreateWalletMovementsTables extends Migration
             $table->string('description')->nullable();
 
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('wallet_movements', function (Blueprint $table) {

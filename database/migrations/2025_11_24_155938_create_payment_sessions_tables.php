@@ -10,8 +10,11 @@ class CreatePaymentSessionsTables extends Migration
     {
         Schema::create('payment_session_statuses', function (Blueprint $table) {
             $table->id();
+            
             $table->string('code')->unique();
+
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('payment_sessions', function (Blueprint $table) {
