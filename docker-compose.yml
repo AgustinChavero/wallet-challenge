@@ -1,20 +1,17 @@
-version: "3.1"
-
-networks:
-    default-network:
-
 services:
     api:
-        image: nanoninja/php-fpm:8.1
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: wallet-challenge-api
         depends_on:
             - dbwallet
+            - redis
         ports:
-            - 8000:8000
+            - "8000:8000"
         volumes:
-            - ./:/var/www/html
-            - ./vendor/laravel/sail/runtimes/8.1/php.ini:/usr/local/etc/php/php.ini
-            - ./:/var/www/html:delegated
-        command: php -S="0.0.0.0:8000" -t="/var/www/html/public"
+            - ./:/var/www
+        command: php -S 0.0.0.0:8000 -t /var/www/public
         networks:
             - default-network
         deploy:
@@ -22,7 +19,6 @@ services:
                 limits:
                     cpus: "3.50"
                     memory: 1024M
-        #command: php artisan serve
 
     dbwallet:
         container_name: dbwallet
@@ -57,6 +53,9 @@ services:
                 limits:
                     cpus: "0.50"
                     memory: 100M
+
+networks:
+    default-network:
 
 volumes:
     mydata:
