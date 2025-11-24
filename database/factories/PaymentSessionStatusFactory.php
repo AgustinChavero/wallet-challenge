@@ -10,9 +10,10 @@ class PaymentSessionStatusFactory extends Factory
     {
         return [
             'code' => strtoupper($this->faker->unique()->randomElement([
-                'PENDING',
+                'PROCESSING',
                 'APPROVED',
                 'REJECTED',
+                'CANCELLED',
             ])),
         ];
     }
