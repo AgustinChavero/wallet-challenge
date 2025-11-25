@@ -34,7 +34,7 @@ class ClientController extends Controller
             return response()->json([
                 'success' => $response->success,
                 'cod_error' => $response->cod_error,
-                'message' => $response->message_error,
+                'message_error' => $response->message_error,
                 'data' => $data
             ], $response->success ? 200 : 400);
         } catch (\SoapFault $e) {

@@ -34,7 +34,7 @@ class PaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'cod_error' => '00',
-                'message' => $response->message_error,
+                'message_error' => $response->message_error,
                 'data' => $data,
             ]);
         } catch (\Exception $e) {
@@ -58,7 +58,7 @@ class PaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'cod_error' => '00',
-                'message' => $response->message_error,
+                'message_error' => $response->message_error,
                 'data' => $response
             ]);
         } catch (\Exception $e) {
