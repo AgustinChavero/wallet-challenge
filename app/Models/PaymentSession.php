@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\UsesUuid;
 
 class PaymentSession extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, UsesUuid;
 
     protected $table = 'payment_sessions';
 
@@ -33,6 +34,6 @@ class PaymentSession extends Model
 
     public function status()
     {
-        return $this->belongsTo(Status::class, 'status_id');
+        return $this->belongsTo(PaymentSessionStatus::class, 'status_id');
     }
 }

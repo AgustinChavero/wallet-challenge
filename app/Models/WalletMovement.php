@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\UsesUuid;
 
 class WalletMovement extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, UsesUuid;
 
     protected $table = 'wallet_movements';
 
@@ -25,6 +26,6 @@ class WalletMovement extends Model
 
     public function movementType()
     {
-        return $this->belongsTo(MovementType::class, 'type_id');
+        return $this->belongsTo(WalletMovementType::class, 'type_id');
     }
 }
