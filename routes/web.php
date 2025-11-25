@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Soap\Services\WalletSoapService;
+use App\Services\WalletSoapService;
 
 Route::any('/soap', function () {
 
-    $server = new SoapServer(null, [
+    $server = new \SoapServer(null, [
         'uri' => url('/soap'),
     ]);
 

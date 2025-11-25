@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\WalletController;
+use App\Http\Controllers\WalletController;
 
 Route::prefix('wallet')->group(function () {
 
