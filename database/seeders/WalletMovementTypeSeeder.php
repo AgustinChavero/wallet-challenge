@@ -15,7 +15,7 @@ class WalletMovementTypeSeeder extends Seeder
 
         $types = [
             ['code' => 'RECHARGE', 'description' => 'Wallet recharge'],
-            ['code' => 'PAYMENT',  'description' => 'Payment made from wallet'],
+            ['code' => 'PURCHASE', 'description' => 'Purchase/Payment made from wallet'],
         ];
 
         foreach ($types as $type) {

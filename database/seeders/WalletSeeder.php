@@ -11,8 +11,9 @@ class WalletSeeder extends Seeder
     public function run(): void
     {
         Client::all()->each(function ($client) {
-            Wallet::factory()->create([
+            Wallet::create([
                 'client_id' => $client->id,
+                'balance' => 0,
             ]);
         });
     }
