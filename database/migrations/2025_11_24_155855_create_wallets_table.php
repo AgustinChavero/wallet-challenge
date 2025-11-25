@@ -14,12 +14,11 @@ class CreateWalletsTable extends Migration
     public function up(): void
     {
         Schema::create('wallets', function (Blueprint $table) {
-            $table->id();
-           
-            $table->unsignedBigInteger('client_id');
+            $table->uuid('id')->primary();
+            $table->uuid('client_id');
 
             $table->decimal('balance', 15, 2)->default(0);
-            
+
             $table->timestamps();
             $table->softDeletes();
 

@@ -9,8 +9,8 @@ class CreatePaymentSessionsTables extends Migration
     public function up(): void
     {
         Schema::create('payment_session_statuses', function (Blueprint $table) {
-            $table->id();
-            
+            $table->uuid('id')->primary();
+
             $table->string('code')->unique();
 
             $table->timestamps();
@@ -18,10 +18,9 @@ class CreatePaymentSessionsTables extends Migration
         });
 
         Schema::create('payment_sessions', function (Blueprint $table) {
-            $table->id();
-
-            $table->unsignedBigInteger('wallet_id');
-            $table->unsignedBigInteger('status_id');
+            $table->uuid('id')->primary();
+            $table->uuid('wallet_id');
+            $table->uuid('status_id');
 
             $table->string('token')->unique();
             $table->decimal('amount', 15, 2);

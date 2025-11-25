@@ -9,7 +9,7 @@ class CreateWalletMovementsTables extends Migration
     public function up(): void
     {
         Schema::create('wallet_movement_types', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
 
             $table->string('code')->unique();
             $table->string('description')->nullable();
@@ -19,11 +19,10 @@ class CreateWalletMovementsTables extends Migration
         });
 
         Schema::create('wallet_movements', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->uuid('wallet_id');
+            $table->uuid('type_id');
 
-            $table->unsignedBigInteger('wallet_id');
-            $table->unsignedBigInteger('type_id');
-            
             $table->decimal('amount', 15, 2);
 
             $table->timestamps();
