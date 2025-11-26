@@ -290,7 +290,40 @@ Todas las respuestas siguen esta estructura:
 -   `wallet_movement_types`: Tipos de movimiento (RECHARGE, PURCHASE)
 -   `payment_session_statuses`: Estados de sesión (PENDING, COMPLETED)
 
-Ver [diagrama completo](documentation/database-diagram.md)
+## 📝 Cómo visualizar el Diagrama de Base de Datos
+
+El archivo `database-diagram.md` contiene un diagrama generado con **Mermaid**.
+Para visualizarlo correctamente es necesario usar **Visual Studio Code** con la extensión adecuada.
+
+### ✅ Extensión necesaria
+
+Instalar en Visual Studio Code:
+
+👉 **Markdown Preview Mermaid Support**
+ID: `bierner.markdown-mermaid`
+
+Esta extensión permite renderizar diagramas Mermaid incluidos dentro de archivos Markdown.
+
+---
+
+### ✅ Cómo abrir el diagrama
+
+1. Abrir el archivo:
+   **`documentation/database-diagram.md`**
+
+2. En Visual Studio Code presionar:
+   **Ctrl + Shift + V**
+   _(o clic derecho → “Open Preview” / “Abrir Vista Previa”)_
+
+3. El diagrama se renderizará automáticamente en la vista previa.
+
+---
+
+### 📌 Nota importante
+
+Si la extensión no está instalada, el archivo mostrará solo texto y **no se dibujará el diagrama**.
+
+---
 
 ## 🔧 Comandos Útiles
 
