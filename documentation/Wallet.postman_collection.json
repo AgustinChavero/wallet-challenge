@@ -1,0 +1,215 @@
+{
+	"info": {
+		"_postman_id": "9b72d383-18de-4a5f-a062-a62c0fce0dd8",
+		"name": "Wallet",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28603602"
+	},
+	"item": [
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "client-register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\" : \"39843562\",\r\n    \"names\": \"Agustin Daniel Chavero\",\r\n    \"email\": \"torinoone1996@gmail.com\",\r\n    \"phone\": \"5492612797321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/client/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"client",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "wallet-recharge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\" : \"39843562\",\r\n    \"phone\": \"5492612797321\",\r\n    \"amount\": 200.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/wallet/recharge",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"wallet",
+								"recharge"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "wallet-balance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\" : \"39843562\",\r\n    \"phone\": \"5492612797321\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/wallet/balance",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"wallet",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "payment-transfer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"document\" : \"39843562\",\r\n    \"phone\": \"5492612797321\",\r\n    \"amount\": 70.00\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/payment/transfer",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"payment",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "payment-confirm",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"session_id\": \"c66b1c9a-9515-4b4c-9f80-58b54cf81704\",\r\n    \"token\": \"640727\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/payment/confirm",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"payment",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
