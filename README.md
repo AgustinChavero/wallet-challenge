@@ -1,64 +1,342 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 💳 Virtual Wallet API
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+API REST con backend SOAP para gestión de billetera virtual con sistema de pagos seguros mediante tokens de confirmación.
 
-## About Laravel
+## ✨ Características
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   ✅ Registro de clientes
+-   ✅ Recarga de billetera
+-   ✅ Sistema de pagos con confirmación por token de 6 dígitos
+-   ✅ Consulta de saldo
+-   ✅ Historial de movimientos
+-   ✅ Arquitectura SOAP + REST
+-   ✅ Validación de tokens con expiración (10 minutos)
+-   ✅ Transacciones atómicas con rollback automático
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🏗️ Arquitectura
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```
+┌─────────────┐      ┌──────────────┐      ┌─────────────┐      ┌──────────┐
+│   Postman   │─────▶│  REST API    │─────▶│ SOAP Server │─────▶│ Database │
+│  (Cliente)  │◀─────│ (Controller) │◀─────│  (Service)  │◀─────│  (MySQL) │
+└─────────────┘      └──────────────┘      └─────────────┘      └──────────┘
+                            │
+                            └─────▶ JSON Response
+```
 
-## Learning Laravel
+### Capas de la Aplicación
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **REST API** (`Controllers`): Punto de entrada HTTP, recibe JSON y valida requests
+2. **SOAP Client** (`SoapClientTrait`): Conecta el REST con el servidor SOAP interno
+3. **SOAP Server** (`routes/web.php /soap`): Expone métodos SOAP
+4. **SOAP Service** (`WalletSoapService`): Capa de adaptación SOAP
+5. **Business Logic** (`WalletService`): Lógica de negocio y acceso a BD
+6. **Database**: MySQL con UUIDs y soft deletes
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🛠️ Requisitos
 
-## Laravel Sponsors
+-   Docker & Docker Compose
+-   Git
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 🚀 Instalación
 
-### Premium Partners
+### 1. Clonar el repositorio
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```bash
+git clone <https://github.com/AgustinChavero/wallet-challenge.git>
+cd wallet-challenge
+```
 
-## Contributing
+### 2. Levantar los contenedores
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+docker compose up -d
+```
 
-## Code of Conduct
+### 3. Instalar dependencias
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+docker compose exec api composer install
+```
 
-## Security Vulnerabilities
+### 4. Configurar variables de entorno
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+El archivo `.env` ya está configurado. Verifica que tenga:
 
-## License
+```env
+DB_CONNECTION=mysql
+DB_HOST=dbwallet
+DB_PORT=3306
+DB_DATABASE=walletdatabase
+DB_USERNAME=user
+DB_PASSWORD=password
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+### 5. Ejecutar migraciones y seeders
+
+```bash
+docker compose exec api php artisan migrate:fresh --seed
+```
+
+### 6. Verificar instalación
+
+```bash
+docker compose ps
+```
+
+Deberías ver 4 contenedores corriendo:
+
+-   `wallet-challenge-nginx` (puerto 8000)
+-   `wallet-challenge-api`
+-   `dbwallet` (puerto 3307)
+-   `redis` (puerto 6379)
+
+## 📡 Uso
+
+La API está disponible en `http://localhost:8000/api`
+
+### Importar colección de Postman
+
+1. Abre Postman
+2. Click en **Import**
+3. Selecciona el archivo `documentation/Wallet_API.postman_collection.json`
+4. La colección se importará con todos los endpoints configurados
+
+### Flujo de uso típico
+
+```bash
+# 1. Registrar cliente
+POST /api/client/register
+
+# 2. Recargar billetera
+POST /api/wallet/recharge
+
+# 3. Consultar saldo
+POST /api/wallet/balance
+
+# 4. Iniciar pago (genera session_id y token)
+POST /api/payment/transfer
+
+# 5. Confirmar pago (usar session_id y token del paso 4)
+POST /api/payment/confirm
+```
+
+## 🔌 Endpoints
+
+### Client
+
+#### POST `/api/client/register`
+
+Registra un nuevo cliente y crea su billetera.
+
+**Request:**
+
+```json
+{
+    "document": "12345678",
+    "names": "John Doe",
+    "email": "john@example.com",
+    "phone": "1234567890"
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "cod_error": "00",
+    "message_error": "Client registered successfully",
+    "data": {
+        "client_id": "uuid",
+        "wallet_id": "uuid",
+        "balance": 0
+    }
+}
+```
+
+### Wallet
+
+#### POST `/api/wallet/recharge`
+
+Recarga saldo en la billetera.
+
+**Request:**
+
+```json
+{
+    "document": "12345678",
+    "phone": "1234567890",
+    "amount": 1000
+}
+```
+
+#### POST `/api/wallet/balance`
+
+Consulta el saldo actual.
+
+**Request:**
+
+```json
+{
+    "document": "12345678",
+    "phone": "1234567890"
+}
+```
+
+### Payment
+
+#### POST `/api/payment/transfer`
+
+Inicia un pago y genera un token de confirmación.
+
+**Request:**
+
+```json
+{
+    "document": "12345678",
+    "phone": "1234567890",
+    "amount": 100
+}
+```
+
+**Response:**
+
+```json
+{
+    "success": true,
+    "cod_error": "00",
+    "message_error": "Payment initiated. Token sent to email.",
+    "data": {
+        "session_id": "uuid",
+        "token": "123456",
+        "message": "Token sent to email (visible for testing purposes)",
+        "expires_in_minutes": 10
+    }
+}
+```
+
+⚠️ **Nota**: El token es visible en la respuesta solo para testing. En producción debe enviarse por email.
+
+#### POST `/api/payment/confirm`
+
+Confirma el pago con el token recibido.
+
+**Request:**
+
+```json
+{
+    "session_id": "uuid-from-previous-step",
+    "token": "123456"
+}
+```
+
+### Testing manual con Postman
+
+Ver `documentation/Wallet_API.postman_collection.json`
+
+### Verificar logs
+
+```bash
+# Logs de la API
+docker compose logs -f api
+
+# Logs de Nginx
+docker compose logs -f nginx
+
+# Logs de Laravel
+docker compose exec api tail -f storage/logs/laravel.log
+```
+
+## 📚 Documentación
+
+-   [Diagrama de Base de Datos](documentation/database-diagram.md)
+-   [Colección de Postman](documentation/Wallet.postman_collection.json)
+
+### Estructura de Respuestas
+
+Todas las respuestas siguen esta estructura:
+
+```json
+{
+    "success": true,
+    "cod_error": "00",
+    "message_error": "Descriptive message",
+    "data": {}
+}
+```
+
+**Códigos de Error:**
+
+-   `00`: Éxito
+-   `01`: Error en registro de cliente
+-   `02`: Error en recarga de billetera
+-   `03`: Error al iniciar pago
+-   `04`: Error al confirmar pago
+-   `05`: Error al consultar saldo
+-   `10`: Error de sistema/SOAP
+
+## 🗄️ Base de Datos
+
+### Tablas principales
+
+-   `clients`: Información de usuarios
+-   `wallets`: Billeteras virtuales
+-   `wallet_movements`: Historial de transacciones
+-   `payment_sessions`: Sesiones de pago con tokens
+-   `wallet_movement_types`: Tipos de movimiento (RECHARGE, PURCHASE)
+-   `payment_session_statuses`: Estados de sesión (PENDING, COMPLETED)
+
+Ver [diagrama completo](documentation/database-diagram.md)
+
+## 🔧 Comandos Útiles
+
+```bash
+# Reiniciar contenedores
+docker compose restart
+
+# Ver rutas disponibles
+docker compose exec api php artisan route:list
+
+# Acceder a MySQL
+docker compose exec dbwallet mysql -u user -ppassword walletdatabase
+
+# Limpiar caché
+docker compose exec api php artisan cache:clear
+docker compose exec api php artisan config:clear
+docker compose exec api php artisan route:clear
+
+# Recrear base de datos
+docker compose exec api php artisan migrate:fresh --seed
+```
+
+## 🐛 Troubleshooting
+
+### El servidor no responde
+
+```bash
+docker compose ps
+docker compose logs api
+```
+
+### Error de conexión a la base de datos
+
+```bash
+docker compose exec api php artisan config:clear
+docker compose restart api
+```
+
+### Token expirado
+
+Los tokens expiran después de 10 minutos. Genera un nuevo pago.
+
+## 👨‍💻 Autor
+
+Agustín Daniel Chavero
+
+## 📄 Licencia
+
+Este proyecto es parte de una prueba técnica.
