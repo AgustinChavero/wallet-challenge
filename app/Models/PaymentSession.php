@@ -15,7 +15,6 @@ class PaymentSession extends Model
 
     protected $fillable = [
         'wallet_id',
-        'session_uid',
         'token',
         'amount',
         'status_id',

@@ -5,22 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Wallet\BalanceWalletRequest;
 use App\Http\Requests\Wallet\RechargeWalletRequest;
+use App\Traits\SoapClientTrait;
+use Illuminate\Http\JsonResponse;
 
 class WalletController extends Controller
 {
-    private function soap()
-    {
-        $soapUrl = 'http://nginx/soap';
+    use SoapClientTrait;
 
-        return new \SoapClient(null, [
-            'location' => $soapUrl,
-            'uri'      => $soapUrl,
-            'trace'    => 1,
-            'exceptions' => true
-        ]);
-    }
-
-    public function recharge(RechargeWalletRequest $request)
+    public function recharge(RechargeWalletRequest $request): JsonResponse
     {
         try {
             $response = $this->soap()->rechargeWallet(
@@ -29,24 +21,15 @@ class WalletController extends Controller
                 $request->amount
             );
 
-            $data = json_decode($response->data, true);
-
-            return response()->json([
-                'success' => true,
-                'cod_error' => '00',
-                'message_error' => $response->message_error,
-                'data' => $data
-            ]);
+            return $this->formatResponse($response);
+        } catch (\SoapFault $e) {
+            return $this->errorResponse('SOAP Error: ' . $e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'cod_error' => '10',
-                'message_error' => $e->getMessage()
-            ], 400);
+            return $this->errorResponse($e->getMessage());
         }
     }
 
-    public function balance(BalanceWalletRequest $request)
+    public function balance(BalanceWalletRequest $request): JsonResponse
     {
         try {
             $response = $this->soap()->checkBalance(
@@ -54,20 +37,11 @@ class WalletController extends Controller
                 $request->phone
             );
 
-            $data = json_decode($response->data, true);
-
-            return response()->json([
-                'success' => true,
-                'cod_error' => '00',
-                'message_error' => $response->message_error,
-                'data' => $data
-            ]);
+            return $this->formatResponse($response);
+        } catch (\SoapFault $e) {
+            return $this->errorResponse('SOAP Error: ' . $e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'cod_error' => '10',
-                'message_error' => $e->getMessage()
-            ], 400);
+            return $this->errorResponse($e->getMessage());
         }
     }
 }

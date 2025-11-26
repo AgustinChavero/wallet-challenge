@@ -5,20 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\ConfirmPaymentRequest;
 use App\Http\Requests\Payment\InitiatePaymentRequest;
+use App\Traits\SoapClientTrait;
+use Illuminate\Http\JsonResponse;
 
 class PaymentController extends Controller
 {
-    private function soap()
-    {
-        $soapUrl = 'http://nginx/soap';
-
-        return new \SoapClient(null, [
-            'location' => $soapUrl,
-            'uri'      => $soapUrl,
-            'trace'    => 1,
-            'exceptions' => true
-        ]);
-    }
+    use SoapClientTrait;
 
     public function pay(InitiatePaymentRequest $request)
     {
@@ -29,25 +21,15 @@ class PaymentController extends Controller
                 $request->amount
             );
 
-            $data = json_decode($response->data, true);
-
-            return response()->json([
-                'success' => true,
-                'cod_error' => '00',
-                'message_error' => $response->message_error,
-                'data' => $data,
-            ]);
+            return $this->formatResponse($response);
+        } catch (\SoapFault $e) {
+            return $this->errorResponse('SOAP Error: ' . $e->getMessage());
         } catch (\Exception $e) {
-
-            return response()->json([
-                'success' => false,
-                'cod_error' => '10',
-                'message_error' => $e->getMessage()
-            ], 400);
+            return $this->errorResponse($e->getMessage());
         }
     }
 
-    public function confirm(ConfirmPaymentRequest $request)
+    public function confirm(ConfirmPaymentRequest $request): JsonResponse
     {
         try {
             $response = $this->soap()->confirmPayment(
@@ -55,19 +37,11 @@ class PaymentController extends Controller
                 $request->token
             );
 
-            return response()->json([
-                'success' => true,
-                'cod_error' => '00',
-                'message_error' => $response->message_error,
-                'data' => $response
-            ]);
+            return $this->formatResponse($response);
+        } catch (\SoapFault $e) {
+            return $this->errorResponse('SOAP Error: ' . $e->getMessage());
         } catch (\Exception $e) {
-
-            return response()->json([
-                'success' => false,
-                'cod_error' => '10',
-                'message_error' => $e->getMessage()
-            ], 400);
+            return $this->errorResponse($e->getMessage());
         }
     }
 }

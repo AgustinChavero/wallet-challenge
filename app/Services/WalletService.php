@@ -116,21 +116,20 @@ class WalletService
             }
 
             $token = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $sessionUid = Str::uuid()->toString();
 
             $pendingStatus = PaymentSessionStatus::where('code', 'PENDING')->first();
 
             $session = PaymentSession::create([
                 'wallet_id'  => $wallet->id,
-                'session_uid' => $sessionUid,
                 'token'      => $token,
                 'amount'     => $amount,
                 'status_id'  => $pendingStatus->id,
             ]);
 
             return [
-                'session_id' => $session->session_uid,
-                'message' => 'Please check your email for the confirmation token',
+                'session_id' => $session->id,
+                'token' => $token,
+                'message' => 'Token sent to email (visible for testing purposes)',
                 'expires_in_minutes' => 10,
             ];
         });
@@ -140,11 +139,9 @@ class WalletService
     {
         return DB::transaction(function () use ($sessionId, $token) {
             $pending = PaymentSessionStatus::where('code', 'PENDING')->first();
-            $confirmed = PaymentSessionStatus::where('code', 'CONFIRMED')->first();
-            $expired = PaymentSessionStatus::where('code', 'EXPIRED')->first();
-            $failed = PaymentSessionStatus::where('code', 'FAILED')->first();
+            $completed = PaymentSessionStatus::where('code', 'COMPLETED')->first();
 
-            $session = PaymentSession::where('session_uid', $sessionId)
+            $session = PaymentSession::where('id', $sessionId)
                 ->where('status_id', $pending->id)
                 ->first();
 
@@ -153,21 +150,19 @@ class WalletService
             }
 
             if (Carbon::now()->gt($session->created_at->addMinutes(10))) {
-                $session->update(['status_id' => $expired->id]);
+                $session->update(['status_id' => $completed->id]);
                 throw new Exception("Token expired");
             }
 
             if ($session->token !== $token) {
-                return DB::transaction(function () use ($session, $failed) {
-                    $session->update(['status_id' => $failed->id]);
-                    throw new Exception("Invalid token");
-                });
+                $session->update(['status_id' => $completed->id]);
+                throw new Exception("Invalid token");
             }
 
             $wallet = $session->wallet;
 
             if ($wallet->balance < $session->amount) {
-                $session->update(['status_id' => $failed->id]);
+                $session->update(['status_id' => $completed->id]);
                 throw new Exception("Insufficient balance");
             }
 
@@ -183,12 +178,12 @@ class WalletService
             ]);
 
             $session->update([
-                'status_id' => $confirmed->id,
+                'status_id' => $completed->id,
                 'confirmed_at' => Carbon::now(),
             ]);
 
             return [
-                'session_id' => $session->session_uid,
+                'session_id' => $session->id,
                 'amount_paid' => (float) $session->amount,
                 'new_balance' => (float) $wallet->balance
             ];
