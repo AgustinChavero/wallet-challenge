@@ -24,6 +24,7 @@ class CreatePaymentSessionsTables extends Migration
 
             $table->string('token')->unique();
             $table->decimal('amount', 15, 2);
+            $table->timestamp('confirmed_at')->nullable();
 
             $table->timestamps();
             $table->softDeletes();
